@@ -51,26 +51,26 @@ jobs:
       run: |
         uname -m
       if: matrix.os == 'macos-latest'
-      shell: matrix.shell
+      shell: ${{ matrix.shell }}
     - name: Install coreutils
       run: |
         brew update && brew install coreutils
       if: matrix.os == 'macos-latest'
-      shell: matrix.shell
+      shell: ${{ matrix.shell }}
     - name: Install Ninja
       run: |
         curl -L -O "https://github.com/ninja-build/ninja/releases/download/v1.10.2/${{ matrix.ninja_file }}" && \
         echo "${{ matrix.ninja_sha }} ${{ matrix.ninja_file }}" | sha256sum -c && \
         ${{ matrix.ninja_sudo }} unzip ${{ matrix.ninja_file }} -d ${{ matrix.ninja_dir }} && rm ${{ matrix.ninja_file }}
-      shell: matrix.shell
+      shell: ${{ matrix.shell }}
     - name: Install Rust
       run: |
         rustup update ${{ matrix.rust }} --no-self-update && rustup default ${{ matrix.rust }}
         rustup target add ${{ matrix.target }}
-      shell: bash
+      shell: ${{ matrix.shell }}
     - name: Build
       run: ./build.sh
-      shell: matrix.shell
+      shell: ${{ matrix.shell }}
     - name: Upload ${{ matrix.tar }} tarball
       uses: actions/upload-artifact@v2
       with:
