@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 set -ex
 
-unameOut="$(uname -s)"
+unameOut="$(uname -s)-$(uname -m)"
 case "${unameOut}" in
-    Darwin*)
+    Darwin-x86_64*)
         EXE_SUFFIX=
         HOST_TRIPLE=x86_64-apple-darwin
         ARTIFACT=solana-bpf-tools-osx.tar.bz2;;
+    Darwin-arm64*)
+        EXE_SUFFIX=
+        HOST_TRIPLE=aarch64-apple-darwin
+        ARTIFACT=solana-bpf-tools-osx-arm64.tar.bz2;;
     MINGW*)
         EXE_SUFFIX=.exe
         HOST_TRIPLE=x86_64-pc-windows-msvc
@@ -23,8 +27,11 @@ rm -rf out
 mkdir -p out
 pushd out
 
-git clone --single-branch --branch bpf-tools-v1.18 https://github.com/solana-labs/rust.git
-echo "$( cd rust && git rev-parse HEAD )  https://github.com/solana-labs/rust.git" >> version.md
+#git clone --single-branch --branch bpf-tools-v1.18 https://github.com/solana-labs/rust.git
+#echo "$( cd rust && git rev-parse HEAD )  https://github.com/solana-labs/rust.git" >> version.md
+# TODO: Revert back after solana merge & tag of https://github.com/solana-labs/rust/pull/30
+git clone --single-branch --branch feature/enable-apple-silicon https://github.com/rado0x54/rust.git
+echo "$( cd rust && git rev-parse HEAD )  https://github.com/rado0x54/rust.git" >> version.md
 
 git clone --single-branch --branch rust-1.54.0 https://github.com/rust-lang/cargo.git
 echo "$( cd cargo && git rev-parse HEAD )  https://github.com/rust-lang/cargo.git" >> version.md
